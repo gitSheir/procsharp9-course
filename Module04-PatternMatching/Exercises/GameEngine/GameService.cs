@@ -15,7 +15,7 @@ namespace GameEngine
         // TODO: Brain exercise :) Without changing Process method signature, change
         // ProcessCommand to use pattern matching and as little ifs as possible 
         // (or none at all, the best solution!)
-        public bool ProcessCommand(CommandDTO command) {
+        public bool ProcessCommand0(CommandDTO command) {
             if (command is null)
                 throw new ArgumentNullException(nameof(command));
             if (command.PlayerSide != _currentMovePlayer)
@@ -24,6 +24,15 @@ namespace GameEngine
                 throw new InvalidMoveException("Invalid game index");
             return Process(command.PlayerSide, (uint)command.Index, command.Move);
         }
+
+        public bool ProcessCommand(CommandDTO command) => command switch
+        {
+            null => throw new ArgumentNullException(nameof(command)),
+            _ when command.PlayerSide != _currentMovePlayer =>throw new InvalidMoveException("Invalid player side"),
+            _ when command.Index > MaxMoves || command.Index < 0 => throw new InvalidMoveException("Invalid game index"),
+            _ => Process(command.PlayerSide, (uint) command.Index, command.Move)
+        };
+
 
         private bool Process(Player player, uint index, MoveType move)
         {
