@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace TypeSystemImprovements
@@ -31,5 +32,12 @@ namespace TypeSystemImprovements
         
         // TODO: provide an extension method GetEnumerator for object type that returns pairs of ValueTuple<string, object> representing property name with its value. 
         // Use helper methods above or any other API that if you prefer to.
+        public static IEnumerator<(string, object)> GetEnumerator(this object o)
+        {
+            foreach (PropertyInfo item in GetAllProperties(o))
+            {
+                yield return (item.Name, GetPropertyValue(o, item));
+            }
+        }
     }
 }
