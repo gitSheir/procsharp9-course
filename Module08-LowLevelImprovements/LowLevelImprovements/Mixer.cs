@@ -32,7 +32,29 @@ namespace LowLevelImprovements
         }
 
         // TODO: optimize this method by skipping initialization of locals and introducing a function pointer instead of a delegate
-        public static Guid After(Guid guid1, Guid guid2, Func<ulong, ulong, ulong> mixer)
+        public static Guid After0(Guid guid1, Guid guid2, Func<ulong, ulong, ulong> mixer)
+        {
+            Span<byte> buffer1 = stackalloc byte[16];
+            Span<byte> buffer2 = stackalloc byte[16];
+
+            guid1.TryWriteBytes(buffer1);
+            guid2.TryWriteBytes(buffer2);
+
+            // read parts, low and high
+            var low1 = ReadOptimized(buffer1, Low);
+            var high1 = ReadOptimized(buffer1, High);
+            var low2 = ReadOptimized(buffer2, Low);
+            var high2 = ReadOptimized(buffer2, High);
+
+            // mix them and write back to buffer1
+            WriteOptimized(buffer1, Low, mixer(low1, low2));
+            WriteOptimized(buffer1, High, mixer(high1, high2));
+
+            return new Guid(buffer1);
+        }
+
+        //function pointer is defned using delegate* keyword; example delegate* <int, int>; // a method pointer to a method (int)->int
+        public unsafe static Guid After(Guid guid1, Guid guid2, delegate* <ulong, ulong, ulong> mixer)
         {
             Span<byte> buffer1 = stackalloc byte[16];
             Span<byte> buffer2 = stackalloc byte[16];
