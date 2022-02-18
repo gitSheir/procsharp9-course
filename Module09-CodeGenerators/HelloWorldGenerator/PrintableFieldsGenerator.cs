@@ -41,6 +41,12 @@ namespace PrintableFields
         private void ProcessPrintAllFieldPartialMethods(GeneratorExecutionContext context, MySyntaxReceiver syntaxReceiver, Compilation compilation)
         {
             // TODO: Implement - look at GivenSpecificPartialMethods_WhenHasFields_ThenAddPrintAllFieldsMethod test
+            foreach (var item in syntaxReceiver.CandidateMethods)
+            {
+                //System.ArgumentException - Message=The hintName contains an invalid character ';' at position 36. (Parameter 'hintName')
+                //context.AddSource(item.ToString(), item.ToString());
+                Debug.WriteLine(item);
+            }
         }
 
         private void ProcessPrintableAttributedFields(GeneratorExecutionContext context, MySyntaxReceiver syntaxReceiver, Compilation compilation, INamedTypeSymbol attributeSymbol)
@@ -123,6 +129,10 @@ private void Print{fieldName}()
             }
 
             // TODO: probably you will be interested in storing information about PrintAllFields method here
+            if (syntaxNode is MethodDeclarationSyntax mds )
+            {
+                CandidateMethods.Add(mds);
+            }
         }
     }
 }
