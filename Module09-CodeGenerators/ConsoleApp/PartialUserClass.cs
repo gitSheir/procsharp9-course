@@ -10,7 +10,7 @@ namespace ConsoleApp
     {
         public partial void PrintAllFields()
         {
-            Console.WriteLine($"_fieldA: {_field}");
+            Console.WriteLine($"_field: {_field}");
         }
     }
 }
